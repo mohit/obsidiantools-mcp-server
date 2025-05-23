@@ -8,6 +8,7 @@ import asyncio
 import json
 import logging
 import os
+from pathlib import Path
 from typing import Any, Dict, List, Optional, Union, cast
 
 import pandas as pd
@@ -498,23 +499,49 @@ class ObsidianToolsServer:
         if not self.vault:
             return {"error": "Vault not initialized"} if as_json else "Error: Vault not initialized"
         try:
+            # Ensure vault path is a Path object
+            if not isinstance(self.vault._dirpath, Path):
+                self.vault._dirpath = Path(self.vault._dirpath)
+            
+            # Get the raw metadata
             df = self.vault.get_note_metadata()
             if not isinstance(df, pd.DataFrame):
                 msg = "Failed to retrieve metadata as a DataFrame."
                 return {"error": msg} if as_json else f"Error: {msg}"
             
-            # Convert any numeric columns to appropriate types
-            for col in df.columns:
-                if df[col].dtype == 'object':
-                    try:
-                        # Try to convert to numeric where possible
-                        df[col] = pd.to_numeric(df[col], errors='ignore')
-                    except:
-                        pass
-
+            # Log initial state
+            logger.info(f"Initial DataFrame shape: {df.shape}")
+            logger.info(f"Initial DataFrame columns: {df.columns.tolist()}")
+            logger.info(f"Initial DataFrame dtypes:\n{df.dtypes}")
+            
+            # Create a copy to avoid modifying the original
+            df = df.copy()
+            
+            # Handle numeric columns
+            numeric_columns = df.select_dtypes(include=['int64', 'float64']).columns
+            logger.info(f"Numeric columns: {numeric_columns.tolist()}")
+            
+            # Handle object columns that might be numeric
+            for col in df.select_dtypes(include=['object']).columns:
+                try:
+                    # Try to convert to numeric, coercing errors to NaN
+                    df[col] = pd.to_numeric(df[col], errors='coerce')
+                    logger.info(f"Converted column {col} to numeric")
+                except Exception as e:
+                    logger.warning(f"Could not convert column {col} to numeric: {e}")
+            
+            # Handle NaN values
+            df = df.replace({np.nan: None})
+            
             if as_json:
-                # Convert NaN to None for JSON serialization
-                return df.replace({np.nan: None}).to_dict(orient='records')
+                try:
+                    # Convert to records
+                    records = df.to_dict(orient='records')
+                    logger.info(f"Successfully converted to {len(records)} records")
+                    return records
+                except Exception as e:
+                    logger.error(f"Error converting DataFrame to JSON: {e}", exc_info=True)
+                    return {"error": f"Error converting metadata to JSON: {str(e)}"}
             else:
                 return df.to_string()
         except Exception as e:
