@@ -1,0 +1,71 @@
+{
+  "name": "obsidiantools-mcp-server",
+  "version": "1.0.0",
+  "description": "MCP server exposing obsidiantools functionality for Obsidian vault analysis",
+  "main": "obsidiantools_mcp_server.py",
+  "scripts": {
+    "start": "python obsidiantools_mcp_server.py"
+  },
+  "keywords": [
+    "mcp",
+    "obsidian",
+    "obsidiantools",
+    "vault-analysis",
+    "knowledge-graph",
+    "markdown"
+  ],
+  "author": "Your Name",
+  "license": "BSD-3-Clause",
+  "dependencies": {
+    "mcp": ">=0.1.0"
+  },
+  "mcp": {
+    "name": "obsidiantools",
+    "description": "Analyze Obsidian vaults with comprehensive graph analysis, metadata extraction, and content search",
+    "tools": [
+      {
+        "name": "init_vault",
+        "description": "Initialize an Obsidian vault for analysis"
+      },
+      {
+        "name": "connect_vault",
+        "description": "Connect notes and build graph structure"
+      },
+      {
+        "name": "gather_vault",
+        "description": "Gather plaintext content from notes"
+      },
+      {
+        "name": "get_graph_stats",
+        "description": "Get vault graph statistics"
+      },
+      {
+        "name": "export_graph",
+        "description": "Export vault graph in various formats"
+      },
+      {
+        "name": "get_note_metadata",
+        "description": "Get metadata for all notes"
+      },
+      {
+        "name": "search_notes",
+        "description": "Search notes by content"
+      },
+      {
+        "name": "find_notes_by_tag",
+        "description": "Find notes containing specific tags"
+      },
+      {
+        "name": "analyze_vault_structure",
+        "description": "Get comprehensive vault analysis"
+      }
+    ],
+    "configuration": {
+      "default_vault_path": {
+        "type": "string",
+        "description": "Default path to Obsidian vault (optional)",
+        "required": false
+      }
+    }
+  }
+}
