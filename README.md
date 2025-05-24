@@ -216,18 +216,4 @@ Contributions are welcome! Please feel free to submit issues or pull requests.
 
 ## Acknowledgments
 
-This MCP server is built on top of the excellent [obsidiantools](https://github.com/mfarragher/obsidiantools) package by Mark Farragher.
-
-## Next Steps
-
-### Immediate Tasks
-- Add support for using MCP configuration (e.g. `claude_desktop_config.json`)
-- Initialize the vault, connect to it and gather data automatically on start
-- Add an option for caching results so they are not required to be computed every time
-
-### Future Exploration
-- Allow use with standard features like those available in `obsidian-mcp-server`:
-  - Read/write files
-  - Directory operations
-  - Property management
-  - Use obsidiantools to optimize graph traversal and provide an alternative to file search
+This MCP server is built on top of the excellent [obsidiantools](https://github.com/mfarragher/obsidiantools) package by Mark Farragher
